@@ -4,29 +4,59 @@
 #include "stl/exceptions.h"
 #include "types.h"
 #include <cstdlib>
+#include <cstring>
 
 namespace stl {
+    
+    enum class pop_back_status : uint8_t
+    {
+        success,
+        error
+    }; 
+
     template <typename T>
     class vector {
+
+        
         public:
+
             // constructors
             vector(): buffer_(nullptr), capacity_(0), size_(0)
             {
             }
-            vector(size_t, T);
-            vector(const vector&);
-            vector& operator=(const vector&)
+            vector(size_t n, const T& o)  : vector() 
             {
-                
+                this->resize(n, o);
             }
-            ~vector() = default;
+            vector(const vector&);
+            vector& operator=(const vector& other)
+            {
+                if (this != &other) {
+                    delete this->buffer_;
+                    this->size_ = other.size();
+                    this->capacity_ = other.capacity_();
 
-            T operator[](int index)
+                    void* tmp = std::memcpy(this->buffer_, other.buffer_, sizeof(T) * other.size());
+                    if (tmp != this->buffer_)
+                    {
+                        // error?
+                    }
+                }
+
+                return *this;
+            }
+
+            ~vector()
+            {
+                delete this->buffer_;
+            }
+
+            T& operator[](size_t index)
             {
                 return this->buffer_[index];
             }
 
-            T at(int index) const
+            T& at(size_t index) const
             {
                 if (index < 0 || index >= this->size())
                 {
@@ -45,9 +75,24 @@ namespace stl {
                 this->size_++;
             }
 
-            void pop_back();
+            [[nodiscard("BROOOOO")]] pop_back_status pop_back(T& object) noexcept
+            {
+                if (!this->empty())
+                {
+                    object = this->buffer_[this->size_-1];
+                    this->size_--;
+                    return pop_back_status::success;
+                }
+                else
+                {
+                    return pop_back_status::error;
+                }
+            }
             
-            void insert();
+            void insert()
+            {
+                
+            }
 
             constexpr size_t size() const noexcept {
                 return this->size_;
