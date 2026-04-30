@@ -1,10 +1,13 @@
+#include "stl/exceptions.h"
 #include "stl/vector.h"
 #include "stl/assert.h"
 
 void test_types()
 {
     stl::vector<stl::vector<int>> a;
-    ASSERT_EQUAL(1, 2);
+    ASSERT_NOT_THROWS([](){
+        throw stl::bad_alloc();
+    });
 }
 
 void test_constructor()
