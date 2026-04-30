@@ -23,7 +23,7 @@ namespace stl {
         }
         else
         {
-            std::printf("[assertion] %s: %s:%d\n", message, getFileName(file), line);
+            std::printf("\033[3;41;30m[assertion] %s: %s:%d\033[0m\n", message, getFileName(file), line);
         }
         
     }
