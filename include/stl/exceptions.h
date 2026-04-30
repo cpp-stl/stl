@@ -42,6 +42,19 @@ namespace stl
             }
     };
 
+    class malloc : public exception
+    {
+        public:
+            malloc() noexcept = default;
+            malloc(const malloc&) noexcept = default;
+            malloc& operator= (const malloc&) noexcept = default;
+            ~malloc() noexcept = default;
+
+            const char* what() const noexcept override {
+                return "dawg, please buy memory!";
+            }
+    };
+
 }; // namespace
 
 #endif
