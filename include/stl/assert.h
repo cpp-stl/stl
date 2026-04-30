@@ -25,7 +25,7 @@ namespace stl {
         {
             std::printf("\033[3;41;30m[assertion] %s: %s:%d\033[0m\n", message, getFileName(file), line);
         }
-        
+
     }
 };
 

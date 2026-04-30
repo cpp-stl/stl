@@ -10,21 +10,21 @@
 #include <cstdint>
 
 namespace stl {
-    
+
     enum class pop_back_status : uint8_t
     {
         success,
         error
-    }; 
+    };
 
     template <typename T>
     class vector {
         public:
             // constructors
-            vector() noexcept : buffer_(nullptr), capacity_(0), size_(0) 
+            vector() noexcept : buffer_(nullptr), capacity_(0), size_(0)
             {
             }
-            
+
             vector(size_t n, const T& o): vector()
             {
                 this->resize(n, o);
@@ -46,7 +46,7 @@ namespace stl {
                 std::for_each(p.begin(), p.end(), [&](auto element){
                     this->push_back(element);
                 });
-                
+
             }
 
             vector& operator=(const vector& other)
@@ -102,10 +102,10 @@ namespace stl {
                     return pop_back_status::error;
                 }
             }
-            
+
             void insert()
             {
-                
+
             }
 
             constexpr size_t size() const noexcept {
@@ -120,7 +120,7 @@ namespace stl {
             {
                 privResize(count, T());
             }
-            
+
             void resize(size_t count, const T& defaultValue) {
                 this->privResize(count, defaultValue);
             }
@@ -155,7 +155,7 @@ namespace stl {
                     return this->capacity() << 1;
                 }
             }
-            
+
             void privResize(size_t count, const T& defaultVal) {
                 // enough capacity?
                 const size_t size = this->size();
@@ -164,7 +164,7 @@ namespace stl {
                 if (count > cap) {
                     this->reserve(count);
                 }
-                
+
                 if (count > size)
                 {
                     // fill in the remaining space with default
@@ -175,7 +175,7 @@ namespace stl {
                 }
                 this->size_ = count;
             }
-            
+
             T* buffer_;
             stl::size_t capacity_;
             stl::size_t size_;
