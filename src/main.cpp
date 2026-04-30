@@ -10,9 +10,10 @@ int main()
 {
     auto start = std::chrono::high_resolution_clock::now();
 
-    vector<int> a;
+    vector<int> a{1, 2, 4};
 
     int b = 0;
+    
     a.push_back(5);
     stl::pop_back_status c = a.pop_back(b);
 
