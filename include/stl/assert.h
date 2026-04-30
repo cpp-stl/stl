@@ -6,7 +6,7 @@
 #include "stl/common.h"
 #include "stl/exceptions.h"
 
-const std::map<char*, int> tests;
+const std::map<const char*, int> tests;
 
 namespace stl {
     class assertion_exception : public exception
@@ -15,7 +15,7 @@ namespace stl {
             return "assertion exception";
         }
     };
-    inline void assert(bool condition, const char *message, int line = __LINE__, const char* file = __FILE__)
+    inline void assert(bool condition, const char *message = "", int line = __LINE__, const char* file = __FILE__)
     {
         if (condition)
         {
@@ -32,6 +32,19 @@ namespace stl {
 #define ASSERT_EQUAL(a, b) stl::assert(a == b, "expected equal, got not equal", __LINE__, __FILE__);
 #define ASSERT_NOT_EQUAL(a, b) stl::assert(a != b, "expected not equal, got equal", __LINE__, __FILE__);
 #define ASSERT_NULL(a) stl::assert(a == nullptr, "expected nullptr, got defined", __LINE__, __FILE__);
-#define ASSERT_THROWS(function) try { function() } catch () { stl::assert(false, "", __LINE__, __FILE__) }
+#define ASSERT_THROWS(function)                                                                    \
+    try { \
+        function(); \
+        stl::assert(false, "expected to throw", __LINE__, __FILE__); \
+    } catch (stl::exception& e) { \
+        stl::assert(true, nullptr, __LINE__, __FILE__); \
+    }
+#define ASSERT_NOT_THROWS(function)                                                                    \
+    try { \
+        function(); \
+        stl::assert(true, nullptr, __LINE__, __FILE__); \
+    } catch (stl::exception& e) { \
+        stl::assert(false, "expected to not throw", __LINE__, __FILE__); \
+    }
 
 #endif
