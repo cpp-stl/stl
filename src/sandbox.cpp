@@ -7,19 +7,6 @@ using vector = stl::vector<T>;
 
 int main()
 {
-    /*
-    std::vector<int> a(100);
-    std::cout << a.capacity() << std::endl;
-
-    a.push_back(10); 
-
-    a.reserve(11);
-    std::cout << a.size() << ", " << a.capacity() << std::endl;
-
-    a.resize(201);
-    std::cout << a.size() << ", " << a.capacity() << std::endl;
-    */
-
     auto start = std::chrono::high_resolution_clock::now();
 
     vector<int> a;
