@@ -1,6 +1,9 @@
-#include <vector>
 #include <iostream>
 #include <chrono>
+#include <stl/vector.h>
+
+template <typename T>
+using vector = stl::vector<T>;
 
 int main()
 {
@@ -19,7 +22,7 @@ int main()
 
     auto start = std::chrono::high_resolution_clock::now();
 
-    std::vector<int> a;
+    vector<int> a;
     std::cout << a.size() << ", " << a.capacity() << std::endl;
 
     int b = a.at(100);

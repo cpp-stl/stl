@@ -9,6 +9,13 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 add_executable(main src/main.cpp)
 add_executable(sandbox src/sandbox.cpp)
 
+set(INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include)
+
+
 target_include_directories(main PUBLIC
-    ${CMAKE_SOURCE_DIR}/include
+    ${INCLUDE_DIR}
+)
+
+target_include_directories(sandbox PUBLIC
+    ${INCLUDE_DIR}
 )
