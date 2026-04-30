@@ -1,6 +1,7 @@
 #ifndef ASSERT_H
 #define ASSERT_H
 
+#include <cstdio>
 #include <map>
 #include "stl/common.h"
 #include "stl/exceptions.h"
@@ -18,11 +19,11 @@ namespace stl {
     {
         if (condition)
         {
-            printf("[assertion] %s: %s:%d\n", "passed", getFileName(file), line);
+            std::printf("[assertion] %s: %s:%d\n", "passed", getFileName(file), line);
         }
         else
         {
-            printf("[assertion] %s: %s:%d\n", message, getFileName(file), line);
+            std::printf("[assertion] %s: %s:%d\n", message, getFileName(file), line);
         }
         
     }
