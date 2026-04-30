@@ -17,41 +17,16 @@ namespace stl
     class out_of_bounds : public exception
     {
         public:
-            out_of_bounds() noexcept = default;
-            out_of_bounds(const out_of_bounds&) noexcept = default;
-            out_of_bounds& operator= (const out_of_bounds&) noexcept = default;
-            ~out_of_bounds() noexcept = default;
-            
             const char* what() const noexcept override {
-                return "XD out of bounds!";
-            }
-
-    };
-
-
-    class bad_realloc : public exception
-    {
-        public:
-            bad_realloc() noexcept = default;
-            bad_realloc(const bad_realloc&) noexcept = default;
-            bad_realloc& operator= (const bad_realloc&) noexcept = default;
-            ~bad_realloc() noexcept = default;
-
-            const char* what() const noexcept override {
-                return "dawg what are you doing 😭";
+                return "out of bounds";
             }
     };
 
-    class malloc : public exception
+    class bad_alloc : public exception
     {
         public:
-            malloc() noexcept = default;
-            malloc(const malloc&) noexcept = default;
-            malloc& operator= (const malloc&) noexcept = default;
-            ~malloc() noexcept = default;
-
             const char* what() const noexcept override {
-                return "dawg, please buy memory!";
+                return "bad allocation";
             }
     };
 

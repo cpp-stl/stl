@@ -34,7 +34,7 @@ namespace stl {
             {
                 void* tmp = (T*) realloc(this->buffer_, other.size());
                 if (!tmp) {
-                    throw stl::bad_realloc();
+                    throw stl::bad_alloc();
                 }
                 tmp = std::memcpy(this->buffer_, other.buffer_, sizeof(T) * other.size());
                 this->buffer_ = (T*) tmp;
@@ -89,7 +89,7 @@ namespace stl {
                 this->size_++;
             }
 
-            [[nodiscard("BROOOOO")]] pop_back_status pop_back(T& object) noexcept
+            [[nodiscard("BROOOO")]] pop_back_status pop_back(T& object) noexcept
             {
                 if (!this->empty())
                 {
@@ -131,7 +131,7 @@ namespace stl {
                     // allocates new space
                     void* tmp = std::realloc(this->buffer_, sizeof(T) * newCap);
                     if (!tmp) {
-                        throw stl::bad_realloc();
+                        throw stl::bad_alloc();
                     }
 
                     this->buffer_ = (T*) tmp;
