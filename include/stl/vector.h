@@ -3,8 +3,10 @@
 
 #include "stl/exceptions.h"
 #include "types.h"
+#include <algorithm>
 #include <cstdlib>
 #include <cstring>
+#include <initializer_list>
 
 namespace stl {
     
@@ -16,31 +18,42 @@ namespace stl {
 
     template <typename T>
     class vector {
-
-        
         public:
-
             // constructors
-            vector(): buffer_(nullptr), capacity_(0), size_(0)
+            vector() noexcept : buffer_(nullptr), capacity_(0), size_(0) 
             {
             }
-            vector(size_t n, const T& o)  : vector() 
+            
+            vector(size_t n, const T& o): vector()
             {
                 this->resize(n, o);
             }
-            vector(const vector&);
+
+            vector(const vector& other) : buffer_(nullptr), size_(other.size()), capacity_(other.capacity())
+            {
+                void* tmp = (T*) realloc(this->buffer_, other.size());
+                if (!tmp) {
+                    throw stl::bad_realloc();
+                }
+                tmp = std::memcpy(this->buffer_, other.buffer_, sizeof(T) * other.size());
+                this->buffer_ = (T*) tmp;
+            }
+
+            vector(std::initializer_list<T> p)
+            {
+                this->resize(p.size());
+                std::for_each(p.begin(), p.end(), [&](auto element){
+                    this->push_back(element);
+                });
+                
+            }
+
             vector& operator=(const vector& other)
             {
                 if (this != &other) {
-                    delete this->buffer_;
                     this->size_ = other.size();
-                    this->capacity_ = other.capacity_();
-
+                    this->reserve(other.capacity_);
                     void* tmp = std::memcpy(this->buffer_, other.buffer_, sizeof(T) * other.size());
-                    if (tmp != this->buffer_)
-                    {
-                        // error?
-                    }
                 }
 
                 return *this;
@@ -165,7 +178,6 @@ namespace stl {
             T* buffer_;
             stl::size_t capacity_;
             stl::size_t size_;
-
     };
 };
 
