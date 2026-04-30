@@ -4,6 +4,7 @@
 void test_types()
 {
     stl::vector<stl::vector<int>> a;
+    ASSERT_EQUAL(1, 2);
 }
 
 void test_constructor()
