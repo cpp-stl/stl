@@ -15,7 +15,7 @@ int main()
     int b = a.at(100);
 
     std::cout << b << std::endl;
-    
+
     for (int i = 0; i < 1000000; ++i)
     {
         a.resize(i);

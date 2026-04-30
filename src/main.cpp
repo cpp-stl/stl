@@ -13,7 +13,7 @@ int main()
     vector<int> a{1, 2, 4};
 
     int b = 0;
-    
+
     a.push_back(5);
     stl::pop_back_status c = a.pop_back(b);
 
@@ -21,7 +21,7 @@ int main()
         case stl::pop_back_status::success:
             std::printf("YAYYY %d\n", b);
             break;
-            
+
         default:
             std::printf("AWWWWW\n");
     }
