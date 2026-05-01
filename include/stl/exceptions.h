@@ -3,7 +3,7 @@
 
 namespace stl {
 class exception {
-  public:
+   public:
     exception() noexcept = default;
     exception(const exception &) noexcept = default;
     exception &operator=(const exception &) noexcept = default;
@@ -13,15 +13,15 @@ class exception {
 };
 
 class out_of_bounds : public exception {
-  public:
+   public:
     const char *what() const noexcept override { return "out of bounds"; }
 };
 
 class bad_alloc : public exception {
-  public:
+   public:
     const char *what() const noexcept override { return "bad allocation"; }
 };
 
-}; // namespace stl
+};  // namespace stl
 
 #endif

@@ -12,6 +12,6 @@ inline stl::size_t strlen(const char *str) noexcept {
     }
     return count;
 }
-}; // namespace stl
+};  // namespace stl
 
 #endif
