@@ -18,17 +18,16 @@ template <typename T> class vector {
   public:
     // constructors
     vector() noexcept : buffer_(nullptr), capacity_(0), size_(0) {}
-
     vector(size_t n, const T &o) : vector() { this->resize(n, o); }
 
     vector(const vector &other)
         : buffer_(nullptr), size_(other.size()), capacity_(other.capacity()) {
-        void *tmp = (T *)realloc(this->buffer_, other.size());
+        void *tmp = realloc(this->buffer_, other.size());
         if (!tmp) {
             throw stl::bad_alloc();
         }
         tmp = std::memcpy(this->buffer_, other.buffer_, sizeof(T) * other.size());
-        this->buffer_ = (T *)tmp;
+        this->buffer_ = static_cast<T *>(tmp);
     }
 
     vector(std::initializer_list<T> p) {
@@ -81,19 +80,18 @@ template <typename T> class vector {
 
     constexpr size_t capacity() const noexcept { return this->capacity_; }
 
-    void resize(size_t count) { privResize(count, T()); }
+    void resize(size_t count) { privResize(count, 0); }
 
     void resize(size_t count, const T &defaultValue) { this->privResize(count, defaultValue); }
 
     void reserve(size_t newCap) {
         if (newCap > this->capacity()) {
-            // allocates new space
             void *tmp = std::realloc(this->buffer_, sizeof(T) * newCap);
             if (!tmp) {
                 throw stl::bad_alloc();
             }
 
-            this->buffer_ = (T *)tmp;
+            this->buffer_ = static_cast<T *>(tmp);
             this->capacity_ = newCap;
         }
     }
@@ -110,8 +108,6 @@ template <typename T> class vector {
     }
 
     void privResize(size_t count, const T &defaultVal) {
-        // enough
-        // capacity?
         const size_t size = this->size();
         const size_t cap = this->capacity();
 
@@ -120,13 +116,6 @@ template <typename T> class vector {
         }
 
         if (count > size) {
-            // fill
-            // in
-            // the
-            // remaining
-            // space
-            // with
-            // default
             for (int i = size; i < cap; i++) {
                 this->buffer_[i] = defaultVal;
             }
