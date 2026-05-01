@@ -4,9 +4,8 @@
 #include "stl/types.h"
 #include "string.h"
 
-inline char *getFileName(const char *file_path) {
+inline void getFileName(const char *file_path, char *&buffer) {
     stl::size_t len = stl::strlen(file_path);
-
 #if defined(_WIN64) || defined(_M_X64)
     char slash = '\\';
 #else
@@ -20,14 +19,13 @@ inline char *getFileName(const char *file_path) {
     }
     pos = pos + 1;
 
-    char *buffer = new char[len - pos];
+    buffer = new char[len - pos + 1];
     stl::size_t incr = 0;
     while (file_path[pos + incr] != '\0') {
         buffer[incr] = file_path[pos + incr];
         incr++;
     }
-    buffer[incr] = file_path[pos + incr];
-    return buffer;
+    buffer[incr] = '\0';
 }
 
 #endif
