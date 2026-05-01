@@ -1,62 +1,65 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
-#include <algorithm>
 #include <cstdint>
 #include <cstdlib>
 #include <cstring>
 #include <initializer_list>
 
 #include "stl/exceptions.h"
+#include "stl/iterator.h"
 #include "types.h"
 
 namespace stl {
 
 enum class pop_back_status : uint8_t { success, error };
 
-template <typename T> class vector {
-  public:
+template <typename T>
+class vector {
+   public:
+    using iterator = stl::iterator<T>;
+    iterator itr;
     // constructors
-    vector() noexcept : buffer_(nullptr), capacity_(0), size_(0) {}
-    vector(size_t n, const T &o) : vector() { this->resize(n, o); }
+    vector() noexcept(true) : buffer_(nullptr), capacity_(0), size_(0) {}
+    vector(size_t n, const T &o = T()) noexcept(false) : vector() { this->resize(n, o); }
 
-    vector(const vector &other)
-        : buffer_(nullptr), size_(other.size()), capacity_(other.capacity()) {
-        void *tmp = realloc(this->buffer_, other.size());
-        if (!tmp) {
-            throw stl::bad_alloc();
+    vector(const vector &other) noexcept(false) : vector() {
+        this->resize(other.size());
+        std::memcpy(this->buffer_, other.buffer_, sizeof(T) * other.size());
+    }
+
+    vector(std::initializer_list<T> p) noexcept(false) : vector() {
+        size_t size = p.size();
+        this->reserve(size);
+        this->size_ = size;
+        size_t start = 0;
+        for (auto &i : p) {
+            this->buffer_[start] = i;
+            start++;
         }
-        tmp = std::memcpy(this->buffer_, other.buffer_, sizeof(T) * other.size());
-        this->buffer_ = static_cast<T *>(tmp);
     }
 
-    vector(std::initializer_list<T> p) : vector() {
-        this->resize(p.size());
-        std::for_each(p.begin(), p.end(), [&](auto element) { this->push_back(element); });
-    }
-
-    vector &operator=(const vector &other) {
+    vector &operator=(const vector &other) noexcept(false) {
         if (this != &other) {
             this->size_ = other.size();
             this->reserve(other.capacity_);
             void *tmp = std::memcpy(this->buffer_, other.buffer_, sizeof(T) * other.size());
         }
-
         return *this;
     }
 
-    ~vector() { delete this->buffer_; }
+    ~vector() noexcept(true) { std::free(this->buffer_); }
 
-    T &operator[](size_t index) { return this->buffer_[index]; }
+    T &operator[](size_t index) noexcept(true) { return this->buffer_[index]; }
 
-    T &at(size_t index) const {
+    T &at(size_t index) const noexcept(false) {
         if (index < 0 || index >= this->size()) {
             throw stl::out_of_bounds();
         }
         return this->buffer_[index];
     }
 
-    void push_back(const T &object) {
+    void push_back(const T &object) noexcept(false) {
         if (this->size() == this->capacity()) {
             this->reserve(this->privGetNewCapacity());
         }
@@ -64,7 +67,7 @@ template <typename T> class vector {
         this->size_++;
     }
 
-    [[nodiscard("BROOOO")]] pop_back_status pop_back(T &object) noexcept {
+    [[nodiscard("BROOOO")]] pop_back_status pop_back(T &object) noexcept(true) {
         if (!this->empty()) {
             object = this->buffer_[this->size_ - 1];
             this->size_--;
@@ -74,32 +77,31 @@ template <typename T> class vector {
         }
     }
 
-    void insert() {}
+    void shrink_to_fit() { privReallocateMem(this->size_); }
 
-    constexpr size_t size() const noexcept { return this->size_; }
+    void clear() { this->size_ = 0; }
 
-    constexpr size_t capacity() const noexcept { return this->capacity_; }
+    constexpr size_t size() const noexcept(true) { return this->size_; }
 
-    void resize(size_t count) { privResize(count, 0); }
+    constexpr size_t capacity() const noexcept(true) { return this->capacity_; }
 
-    void resize(size_t count, const T &defaultValue) { this->privResize(count, defaultValue); }
+    void resize(size_t count, const T &defaultValue = T()) noexcept(false) {
+        this->privResize(count, defaultValue);
+    }
 
-    void reserve(size_t newCap) {
+    void reserve(size_t newCap) noexcept(false) {
         if (newCap > this->capacity()) {
-            void *tmp = std::realloc(this->buffer_, sizeof(T) * newCap);
-            if (!tmp) {
-                throw stl::bad_alloc();
-            }
-            this->buffer_ = static_cast<T *>(tmp);
-            this->capacity_ = newCap;
-
-            memset(this->buffer_ + this->size_, 0x0, newCap - this->capacity());
+            privReallocateMem(newCap);
         }
     }
 
-    bool empty() const { return this->buffer_ == nullptr; }
+    bool empty() const noexcept(true) { return this->buffer_ == nullptr; }
 
-  private:
+    iterator begin() const { return itr ; }
+    iterator end() const { return itr; }
+
+
+   private:
     const size_t privGetNewCapacity() const noexcept {
         if (this->capacity() == 0) {
             return 1;
@@ -110,24 +112,34 @@ template <typename T> class vector {
 
     void privResize(size_t count, const T &defaultVal) {
         const size_t size = this->size();
-        const size_t cap = this->capacity();
 
-        if (count > cap) {
-            this->reserve(count);
+        if (count > this->capacity()) {
+            privReallocateMem(count);
         }
 
         if (count > size) {
-            for (int i = size; i < count; i++) {
+            for (size_t i = size; i < count; i++) {
                 this->buffer_[i] = defaultVal;
             }
         }
         this->size_ = count;
     }
 
+    void privReallocateMem(size_t newCap) {
+        size_t size = sizeof(T) * newCap;
+        void *tmp = std::realloc(this->buffer_, size);
+        if (!tmp) {
+            throw stl::bad_alloc();
+        }
+
+        this->buffer_ = (T *)(tmp);
+        this->capacity_ = newCap;
+    }
+    
     T *buffer_;
     stl::size_t capacity_;
     stl::size_t size_;
 };
-}; // namespace stl
+};  // namespace stl
 
 #endif
