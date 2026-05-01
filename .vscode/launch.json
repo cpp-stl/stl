@@ -13,6 +13,19 @@
             "MIMode": "gdb",
             "miDebuggerPath": "/usr/sbin/gdb",
             "preLaunchTask": "build-debug"
+        },
+        {
+            "name": "Debug main",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/main",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "MIMode": "gdb",
+            "miDebuggerPath": "/usr/sbin/gdb",
+            "preLaunchTask": "build-debug"
         }
     ]
 }
