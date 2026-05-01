@@ -30,7 +30,7 @@ template <typename T> class vector {
         this->buffer_ = static_cast<T *>(tmp);
     }
 
-    vector(std::initializer_list<T> p): vector() {
+    vector(std::initializer_list<T> p) : vector() {
         this->resize(p.size());
         std::for_each(p.begin(), p.end(), [&](auto element) { this->push_back(element); });
     }
@@ -90,9 +90,10 @@ template <typename T> class vector {
             if (!tmp) {
                 throw stl::bad_alloc();
             }
-
             this->buffer_ = static_cast<T *>(tmp);
             this->capacity_ = newCap;
+
+            memset(this->buffer_ + this->size_, 0x0, newCap - this->capacity());
         }
     }
 
@@ -116,7 +117,7 @@ template <typename T> class vector {
         }
 
         if (count > size) {
-            for (int i = size; i < cap; i++) {
+            for (int i = size; i < count; i++) {
                 this->buffer_[i] = defaultVal;
             }
         }
