@@ -30,7 +30,7 @@ template <typename T> class vector {
         this->buffer_ = static_cast<T *>(tmp);
     }
 
-    vector(std::initializer_list<T> p) {
+    vector(std::initializer_list<T> p): vector() {
         this->resize(p.size());
         std::for_each(p.begin(), p.end(), [&](auto element) { this->push_back(element); });
     }
