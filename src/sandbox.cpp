@@ -3,18 +3,14 @@
 #include <stl/vector.h>
 
 template <typename T>
-using vector = stl::vector<T>;
+using vector = std::vector<T>;
 
 int main()
 {
     auto start = std::chrono::high_resolution_clock::now();
 
-    vector<int> a;
+    vector<int> a{1, 2, 3, 4, 5};
     std::cout << a.size() << ", " << a.capacity() << std::endl;
-
-    int b = a.at(100);
-
-    std::cout << b << std::endl;
 
     for (int i = 0; i < 1000000; ++i)
     {
