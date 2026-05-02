@@ -8,16 +8,20 @@
 
 #include "stl/exceptions.h"
 #include "stl/iterator.h"
+#include "stl/reverse_iterator.h"
+
 #include "types.h"
 
 namespace stl {
 
-enum class pop_back_status : uint8_t { success, error };
+enum class pop_back_status : uint8_t { success, empty };
 
 template <typename T>
 class vector {
    public:
     using iterator = stl::iterator<T>;
+    using reverse_iterator = stl::reverse_iterator<T>;
+
     // constructors
     vector() noexcept(true) : buffer_(nullptr), capacity_(0), size_(0) {}
     vector(size_t n, const T &o = T()) noexcept(false) : vector() { this->resize(n, o); }
@@ -66,13 +70,15 @@ class vector {
         this->size_++;
     }
 
+    // 
     [[nodiscard("BROOOO")]] pop_back_status pop_back(T &object) noexcept(true) {
-        if (!this->empty()) {
-            object = this->buffer_[this->size_ - 1];
+        if (this->empty()) {
+            return pop_back_status::empty;
+        }
+        else {
             this->size_--;
+            object = this->buffer_[this->size_];
             return pop_back_status::success;
-        } else {
-            return pop_back_status::error;
         }
     }
 
@@ -96,21 +102,44 @@ class vector {
 
     bool empty() const noexcept(true) { return this->buffer_ == nullptr; }
 
-    iterator begin() { return iterator(this->first()); }
-    iterator end() { return iterator(this->last()); }
+    const T& front() const {
+        if (this->empty()) {
+            throw stl::out_of_bounds();
+        }
+        return this->at(0);
+    }
 
+    const T& back() const {
+        if (this->empty()) {
+            throw stl::out_of_bounds();
+        }
+        return this->at(this->size() - 1);
+    }
 
-   private:
-    T* first()
-    {
+    const T* data() const {
+        if (this->empty()) {
+            return nullptr;
+        }
         return this->buffer_;
     }
 
-    T* last()
-    {
-        if(this->buffer_ == nullptr || this->size() == 0)
-        {
-            return this->first();
+    iterator begin() { return iterator(this->first()); }
+    iterator end() { return iterator(this->last()); }
+    reverse_iterator rbegin() { return reverse_iterator(this->last()); }
+    reverse_iterator rend() { return reverse_iterator(this->first()); }
+
+
+   private:
+    T *first() {
+        if (this->empty()) {
+            return nullptr;
+        }
+        return this->buffer_;
+    }
+
+    T *last() {
+        if (this->empty()) {
+            return nullptr;
         }
         return this->first() + this->size();
     }
@@ -148,7 +177,7 @@ class vector {
         this->buffer_ = (T *)(tmp);
         this->capacity_ = newCap;
     }
-    
+
     T *buffer_;
     stl::size_t capacity_;
     stl::size_t size_;
