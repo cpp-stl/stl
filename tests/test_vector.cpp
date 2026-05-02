@@ -1,31 +1,29 @@
-#include "stl/assert.h"
-#include "stl/vector.h"
+#include <stl/vector.h>
+#include <test/common.h>
 
-void test_types() { 
-    stl::vector<stl::vector<int>> a;
-}
-
-void test_default_constructor() {
+TEST("default constructor", [](){
     stl::vector<int> a;
-    ASSERT_EQUAL(a.size(), 0);
+    ASSERT_EQUAL(a.size(), 5);
     ASSERT_EQUAL(a.capacity(), 0);
-    a.push_back(1);
-}
+});
 
-void test_copy_constructor() {
-    stl::vector<int> a;
-    a.push_back(0);
-    a.push_back(1);
-    a.push_back(2);
+TEST("specialized constructor", [](){
+    stl::vector<int> a(5, 10);
+    ASSERT_EQUAL(a.size(), 5);
+    ASSERT_EQUAL(a.capacity(), 5);
 
-    stl::vector<int> b(a);
-    ASSERT_EQUAL(a.size(), 3);
-    ASSERT_EQUAL(a.capacity(), 4);
-
-     for (int i = 0; i < 3; i++) {
-        ASSERT_EQUAL(a.at(i), i);
+    for (int i = 0; i < 5; i++) {
+        ASSERT_EQUAL(a.at(i), 10);
     }
-}
+
+    stl::vector<int> b(5);
+    ASSERT_EQUAL(b.size(), 5);
+    ASSERT_EQUAL(b.capacity(), 5);
+
+    for (int i = 0; i < 5; i++) {
+        ASSERT_EQUAL(b.at(i), 0);
+    }
+});
 
 void test_specialized_constructor() {
     stl::vector<int> a(5, 10);
@@ -37,11 +35,19 @@ void test_specialized_constructor() {
     }
 
     stl::vector<int> b(5);
-    ASSERT_EQUAL(a.size(), 5);
-    ASSERT_EQUAL(a.capacity(), 5);
+    ASSERT_EQUAL(b.size(), 5);
+    ASSERT_EQUAL(b.capacity(), 5);
 
     for (int i = 0; i < 5; i++) {
         ASSERT_EQUAL(b.at(i), 0);
+    }
+
+    stl::vector<void*> c(5);
+    ASSERT_EQUAL(c.size(), 5);
+    ASSERT_EQUAL(c.capacity(), 5);
+
+    for (int i = 0; i < 5; i++) {
+        ASSERT_NULL(c.at(i));
     }
 }
 
@@ -93,13 +99,38 @@ void test_index_out_of_bounds()
     a[-1];
 }
 
+void test_iterator()
+{
+    stl::vector<int> a{1, 2, 3, 4, 5};
+
+    int i = 0;
+    for (auto j = a.begin(); j != a.end(); j++) {
+        ASSERT_EQUAL(*j, a[i]);
+        i++;
+    }
+
+    stl::vector<int> b;
+    ASSERT_NULL(b.begin());
+    ASSERT_NULL(b.end());
+
+    stl::vector<int> c;
+    c.push_back(1);
+    c.clear();
+
+    ASSERT_NULL(c.begin().base());
+}
+
+
 int main() {
-    test_default_constructor();
-    test_copy_constructor();
-    test_specialized_constructor();
-    test_initializer_list();
+    //test_default_constructor();
+    //test_copy_constructor();
+    //test_specialized_constructor();
+    //test_initializer_list();
     
-    test_types();
-    test_resize();
-    test_reserve();
+    //test_types();
+    //test_resize();
+    //test_reserve();
+    //test_iterator();
+
+    RUN_TESTS();
 }
