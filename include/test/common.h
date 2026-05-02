@@ -18,29 +18,28 @@ namespace test {
     inline stl::vector<__test> __tests;
     class __test_secret_exception : public stl::exception {
         public:
-        __test_secret_exception(int line = __LINE__, const char* what = nullptr) : line_(line), message_(what) {};
+        __test_secret_exception(int line = __LINE__, std::string what = nullptr) : line_(line), message_(what) {};
         const int line() const noexcept { return this->line_; }
-        const char * what() const noexcept override { return this->message_ ? this->message_ : "test failed"; }
+        const char * what() const noexcept override { return this->message_.c_str(); }
         private:
             int line_;
-            const char* message_;
+            std::string message_;
     };
     inline void __assert(bool condition, std::string message, int line) {
-    if (condition) {
+    if (!condition) {
         // throw
-        throw test::__test_secret_exception(line, message.c_str());
+        throw test::__test_secret_exception(line, message);
     }
 }
 };  // namespace test
 
-#define ASSERT_EQUAL(a, b) {test::__assert(a == b, std::format("got {}, expected {}", std::to_string(a), std::to_string(b)), \
-                __LINE__);}
-#define ASSERT_NOT_EQUAL(a, b) {test::__assert(a == b, std::format("got {}, expected {}", std::to_string(a), std::to_string(b)), \
+#define ASSERT_EQUAL(a, b) {test::__assert(a == b, std::format("got {}, expected {}", std::to_string(a), std::to_string(b)),__LINE__);}
+#define ASSERT_NOT_EQUAL(a, b) {test::__assert(a != b, std::format("got {}, expected {}", std::to_string(a), std::to_string(b)), \
                 __LINE__);}
 #define ASSERT_NULL(a) \
-    test::__assert(a == nullptr, "expected nullptr, got defined", __LINE__);
+    test::__assert(a != nullptr, "expected nullptr, got defined", __LINE__);
 #define ASSERT_NOT_NULL(a) \
-    test::__assert(a != nullptr, "expected defined, got nullptr", __LINE__);
+    test::__assert(a == nullptr, "expected defined, got nullptr", __LINE__);
 #define ASSERT_THROWS(function)                                      \
     try {                                                            \
         function();                                                  \
@@ -51,9 +50,9 @@ namespace test {
 #define ASSERT_NOT_THROWS(function)                                      \
     try {                                                                \
         function();                                                      \
-        test::__assert(true, nullptr, __LINE__, __FILE__);                  \
+        test::__assert(true, nullptr, __LINE__);                  \
     } catch (stl::exception & e) {                                       \
-        test::__assert(false, "expected to not throw", __LINE__, __FILE__); \
+        test::__assert(false, "expected to not throw", __LINE__); \
     }
 
 #define TEST_CAT_(a, b) a##b                                                                                                                                 
@@ -65,9 +64,10 @@ namespace test {
           return 0;\
       }()\
 
-inline void run_tests(const char* fileName = __FILE_NAME__) {
+inline void run_tests(const char* fileName = __FILE_NAME__) noexcept {
     int testsPassed = 0;
     int testsFailed = 0;
+    std::printf("\nRunning tests on %s:\n", fileName);
     for (auto test = test::__tests.begin(); test != test::__tests.end(); test++) {
         if (test.base()->fileName == fileName) {
             //std::printf("\nRunning test \"%s\"\n", test.base()->testName);
@@ -85,7 +85,7 @@ inline void run_tests(const char* fileName = __FILE_NAME__) {
 
     std::printf("\nTotal tests ran: %d\n", test::__tests.size());
     std::printf("Tests passed: %d\n", testsPassed);
-    std::printf("Tests failed: %d\n", testsFailed);
+    std::printf("Tests failed: %d\n\n", testsFailed);
 }
 
 #define RUN_TESTS(file) { run_tests(__FILE_NAME__); };
