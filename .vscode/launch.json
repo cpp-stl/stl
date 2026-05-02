@@ -11,7 +11,7 @@
             "cwd": "${workspaceFolder}",
             "environment": [],
             "MIMode": "gdb",
-            "miDebuggerPath": "/usr/sbin/gdb",
+            "miDebuggerPath": "/usr/bin/gdb",
             "preLaunchTask": "build-debug"
         },
         {
@@ -24,8 +24,9 @@
             "cwd": "${workspaceFolder}",
             "environment": [],
             "MIMode": "gdb",
-            "miDebuggerPath": "/usr/sbin/gdb",
-            "preLaunchTask": "build-debug"
+            "miDebuggerPath": "/usr/bin/gdb",
+            "preLaunchTask": "build-debug",
+            "externalConsole": false
         }
     ]
 }

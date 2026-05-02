@@ -18,7 +18,6 @@ template <typename T>
 class vector {
    public:
     using iterator = stl::iterator<T>;
-    iterator itr;
     // constructors
     vector() noexcept(true) : buffer_(nullptr), capacity_(0), size_(0) {}
     vector(size_t n, const T &o = T()) noexcept(false) : vector() { this->resize(n, o); }
@@ -97,11 +96,25 @@ class vector {
 
     bool empty() const noexcept(true) { return this->buffer_ == nullptr; }
 
-    iterator begin() const { return itr ; }
-    iterator end() const { return itr; }
+    iterator begin() { return iterator(this->first()); }
+    iterator end() { return iterator(this->last()); }
 
 
    private:
+    T* first()
+    {
+        return this->buffer_;
+    }
+
+    T* last()
+    {
+        if(this->buffer_ == nullptr || this->size() == 0)
+        {
+            return this->first();
+        }
+        return this->first() + this->size();
+    }
+
     const size_t privGetNewCapacity() const noexcept {
         if (this->capacity() == 0) {
             return 1;

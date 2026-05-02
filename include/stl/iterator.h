@@ -5,31 +5,36 @@ namespace stl {
 template <typename T>
 class iterator {
    public:
-    iterator() : begin_(nullptr), end_(nullptr) {}
-    iterator(T* begin, T* end);
-    iterator(const iterator &);
-    iterator &operator=(const iterator &);
+    iterator() : ptr_(nullptr){}
+    iterator(T* ptr): ptr_(ptr){}
+    iterator(const iterator &rhs): ptr_(rhs.ptr_){}
+    iterator &operator=(const iterator &rhs)
+    {
+        this->ptr_ = rhs.ptr_;
+    }
     ~iterator() {
-        this->begin_ = nullptr;
-        this->end_ = nullptr;
+        this->ptr_ = nullptr;
     };
 
-    T* begin() const noexcept(true)
+    bool operator==(iterator& rhs) noexcept(true)
     {
-        return this->begin_;
+        return *(this->ptr_) == *(rhs.ptr_);
     }
 
-    T* end() const noexcept(true) {
-        return this->end_;
-    };
-    
-    // auto& i = begin();
-    // auto i = begin();
-    // vector<int>::iterator
-    // vector<int>::error
+    iterator operator++(int unused) noexcept(true)
+    {
+        iterator tmp = this->ptr_;
+        this->ptr_ = this->ptr_ + 1;
+        return tmp;
+    }
+
+    T operator*() noexcept(true)
+    {
+        return *(this->ptr_);
+    }
+
    private:
-    const T *begin_;
-    const T *end_;
+    T *ptr_;
 };
 };  // namespace stl
 
