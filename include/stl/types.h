@@ -3,10 +3,9 @@
 
 namespace stl {
 // 64 bit size_t
-#if defined(__x86_64__) || defined(_M_X64) || defined(__aarch64__) || defined(__LP64__) || \
-    defined(_WIN64)
+#if _64BIT
 using size_t = unsigned long long;
-#elif defined(i386) || defined(__i386__) || defined(__i386) || defined(_M_IX86)
+#elif _32BIT
 // 32 bit size_t
 using size_t = unsigned int;
 #else
@@ -16,5 +15,7 @@ using size_t = unsigned int;
 // size.
 using size_t = unsigned int;
 #endif
+
+using ptrdiff_t = decltype(static_cast<int*>(nullptr) - static_cast<int*>(nullptr));
 };  // namespace stl
 #endif
