@@ -3,7 +3,7 @@
 
 TEST("default constructor", [](){
     stl::vector<int> a;
-    ASSERT_EQUAL(a.size(), 5);
+    ASSERT_EQUAL(a.size(), 0);
     ASSERT_EQUAL(a.capacity(), 0);
 });
 
