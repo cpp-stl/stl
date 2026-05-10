@@ -1,10 +1,8 @@
 #include "vector"
 #include <iostream>
 #include <vector>
+#include "stl/string.h"
 int main()
-{
-    std::vector<int> a;
-    a.push_back(1);
-    a.clear();
-    std::cout << (a.begin().base() == nullptr ? "true" : "false") << std::endl;
+{ 
+	stl::string j; 
 }

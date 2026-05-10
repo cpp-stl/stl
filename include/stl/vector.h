@@ -70,7 +70,6 @@ class vector {
         this->size_++;
     }
 
-    // 
     [[nodiscard("BROOOO")]] pop_back_status pop_back(T &object) noexcept(true) {
         if (this->empty()) {
             return pop_back_status::empty;

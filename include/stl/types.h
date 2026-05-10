@@ -1,9 +1,10 @@
 #ifndef TYPES_H
 #define TYPES_H
 
+#include "common.h"
 namespace stl {
 // 64 bit size_t
-#if _64BIT
+#ifdef _64BIT
 using size_t = unsigned long long;
 #elif _32BIT
 // 32 bit size_t
