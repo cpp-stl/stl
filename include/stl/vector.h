@@ -23,8 +23,11 @@ class vector {
     using reverse_iterator = stl::reverse_iterator<T>;
 
     // constructors
-    vector() noexcept(true) : buffer_(nullptr), capacity_(0), size_(0) {}
-    vector(size_t n, const T &o = T()) noexcept(false) : vector() { this->resize(n, o); }
+    vector() noexcept : buffer_(nullptr), capacity_(0), size_(0) {}
+    vector(size_t capacity, const T &o = T()) noexcept(false) : vector() 
+    {
+        this->resize(capacity, o);
+    }
 
     vector(const vector &other) noexcept(false) : vector() {
         this->resize(other.size());
@@ -51,9 +54,9 @@ class vector {
         return *this;
     }
 
-    ~vector() noexcept(true) { std::free(this->buffer_); }
+    ~vector() noexcept { std::free(this->buffer_); }
 
-    T &operator[](size_t index) noexcept(true) { return this->buffer_[index]; }
+    T &operator[](size_t index) noexcept { return this->buffer_[index]; }
 
     T &at(size_t index) const noexcept(false) {
         if (index < 0 || index >= this->size()) {
@@ -70,7 +73,7 @@ class vector {
         this->size_++;
     }
 
-    [[nodiscard("BROOOO")]] pop_back_status pop_back(T &object) noexcept(true) {
+    [[nodiscard]] pop_back_status pop_back(T &object) noexcept {
         if (this->empty()) {
             return pop_back_status::empty;
         }
@@ -85,12 +88,12 @@ class vector {
 
     void clear() { this->size_ = 0; }
 
-    constexpr size_t size() const noexcept(true) { return this->size_; }
+    constexpr size_t size() const noexcept { return this->size_; }
 
-    constexpr size_t capacity() const noexcept(true) { return this->capacity_; }
+    constexpr size_t capacity() const noexcept { return this->capacity_; }
 
-    void resize(size_t count, const T &defaultValue = T()) noexcept(false) {
-        this->privResize(count, defaultValue);
+    void resize(size_t capacity, const T &defaultValue = T()) noexcept(false) {
+        this->privResize(capacity, defaultValue);
     }
 
     void reserve(size_t newCap) noexcept(false) {
@@ -99,7 +102,7 @@ class vector {
         }
     }
 
-    bool empty() const noexcept(true) { return this->buffer_ == nullptr; }
+    bool empty() const noexcept { return this->buffer_ == nullptr; }
 
     const T& front() const {
         if (this->empty()) {
@@ -151,22 +154,22 @@ class vector {
         }
     }
 
-    void privResize(size_t count, const T &defaultVal) {
+    void privResize(size_t capacity, const T &defaultVal) noexcept(false) {
         const size_t size = this->size();
 
-        if (count > this->capacity()) {
-            privReallocateMem(count);
+        if (capacity > this->capacity()) {
+            privReallocateMem(capacity);
         }
 
-        if (count > size) {
-            for (size_t i = size; i < count; i++) {
+        if (capacity > size) {
+            for (size_t i = size; i < capacity; i++) {
                 this->buffer_[i] = defaultVal;
             }
         }
-        this->size_ = count;
+        this->size_ = capacity;
     }
 
-    void privReallocateMem(size_t newCap) {
+    void privReallocateMem(size_t newCap) noexcept(false) {
         size_t size = sizeof(T) * newCap;
         void *tmp = std::realloc(this->buffer_, size);
         if (!tmp) {

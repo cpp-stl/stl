@@ -4,5 +4,5 @@
 #include "stl/string.h"
 int main()
 { 
-	stl::string j; 
+	stl::string j;
 }
